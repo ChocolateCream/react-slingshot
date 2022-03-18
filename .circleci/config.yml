@@ -3,7 +3,7 @@ version: 2.1
 ## adding an anchor for the docker image
 docker_default_img: &default_img
     docker:
-        - image: cimg/base:stable
+        - image: circleci/node:13.8.0
 
 jobs:
     say_hello_world:
