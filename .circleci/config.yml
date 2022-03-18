@@ -6,14 +6,27 @@ docker_default_img: &default_img
         - image: circleci/node:13.8.0
 
 jobs:
-    say_hello_world:
+
+    build:
         <<: *default_img
         steps:
-            - run:
-                  name: Say Hello World
-                  command: echo "Hello World from Mina"
+            ## checks out the code at the repo
+            - checkout
+            ## downloads and installs npm and the required dependencies
+            - run: npm i
+            ## saving the downloaded files to save the bandwidth later
+            - save_cache:
+                paths: [/src/node_modules]
+                key: npm_packages
+            ## the linting step
+            - run: npm run lint
 
 workflows:
-    hello_world_workflow:
+
+    build_test_analyze:
         jobs:
-            - say_hello_world
+            - build
+            - test:
+                requires: [build]
+            - analyze:
+                requires: [test]
