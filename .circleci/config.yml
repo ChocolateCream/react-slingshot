@@ -21,6 +21,29 @@ jobs:
             ## the linting step
             - run: npm run lint
 
+    test:
+        <<: *default_img
+        steps:
+            ## checks out the code at the repo
+            - checkout
+            ## restoring the cache to save the bandwidth
+            - restore_cache:
+                keys: [npm_packages]
+            ## installing the package and the required dependencies from the cache
+            - run: npm i
+            ## the linting step
+            - run: npm run test
+
+    analyze:
+        <<: *default_img
+        steps:
+          - run: npm audit
+          - run:
+                name: Run on Failure
+                command: echo "A job has failed and this step was run for this reason"
+                when: on_fail
+
+
 workflows:
 
     build_test_analyze:
